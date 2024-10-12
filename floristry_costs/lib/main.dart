@@ -46,8 +46,6 @@ class MyAppState extends ChangeNotifier {
   }
 }
 
-// ...
-
 class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -64,6 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
         page = GeneratorPage();
       case 1:
         page = FavoritesPage();
+      case 2:
+        page = CalculatorPage();
       default:
         throw UnimplementedError('no widget for $selectedIndex');
     }
@@ -81,6 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   NavigationRailDestination(
                     icon: Icon(Icons.favorite),
+                    label: Text('Favorites'),
+                  ),
+                  NavigationRailDestination(
+                    icon: Icon(Icons.calculate),
                     label: Text('Favorites'),
                   ),
                 ],
@@ -172,6 +176,273 @@ class FavoritesPage extends StatelessWidget {
             leading: Icon(Icons.favorite),
             title: Text(pair.asLowerCase),
           ),
+      ],
+    );
+  }
+}
+
+class CalculatorPage extends StatefulWidget {
+  @override
+  _CalculatorPageState createState() => _CalculatorPageState();
+}
+
+class _CalculatorPageState extends State<CalculatorPage> {
+  int _quantity = 1;
+  double _price = 0.0;
+  double _vat = 20.0;
+  double _markup = 20.0;
+  double _multiply = 2.0;
+  double _final = 20.0;
+
+  double _totalPrice = 0.0;
+
+  void _updateTotalPrice() {
+    setState(() {
+      _totalPrice = _quantity * _price;
+    });
+  }
+
+  void _updateFinalPrice() {
+    setState(() {
+      _final = _quantity *
+          _price *
+          (1 + _vat / 100) *
+          (1 + _markup / 100) *
+          _multiply;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            SizedBox(width: 5.0),
+            Expanded(
+              // Item
+              child: Text("Item"),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Quantiy
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                    width: 30.0,
+                    child: Text("QTY"),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Price
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                    width: 50.0, // Adjust width as needed
+                    child: Text("Cost"),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Price
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                      width: 50.0, // Adjust width as needed
+                      child: Text("Total")),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            SizedBox(width: 5.0),
+            Expanded(
+              // Item
+              child: TextField(
+                decoration: InputDecoration(hintText: "Enter Item Name"),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Quantiy
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                    width: 30.0,
+                    child: TextField(
+                      keyboardType: TextInputType.number,
+                      controller:
+                          TextEditingController(text: _quantity.toString()),
+                      onChanged: (value) {
+                        if (value.isNotEmpty) {
+                          _quantity = int.parse(value);
+                          _updateTotalPrice();
+                          _updateFinalPrice();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Price
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                    width: 50.0, // Adjust width as needed
+                    child: TextField(
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      controller:
+                          TextEditingController(text: _price.toString()),
+                      onChanged: (value) {
+                        if (value.isNotEmpty) {
+                          _price = double.parse(value);
+                          _updateTotalPrice();
+                          _updateFinalPrice();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Price
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                      width: 50.0, // Adjust width as needed
+                      child: Text(_totalPrice.toStringAsFixed(2))),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            SizedBox(width: 5.0),
+            Text("VAT: "),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Price
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                    width: 50.0, // Adjust width as needed
+                    child: TextField(
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      controller: TextEditingController(text: _vat.toString()),
+                      onChanged: (value) {
+                        if (value.isNotEmpty) {
+                          _vat = double.parse(value);
+                          _updateFinalPrice();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            SizedBox(width: 5.0),
+            Text("Markup: "),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Price
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                    width: 50.0, // Adjust width as needed
+                    child: TextField(
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      controller:
+                          TextEditingController(text: _markup.toString()),
+                      onChanged: (value) {
+                        if (value.isNotEmpty) {
+                          _vat = double.parse(value);
+                          _updateFinalPrice();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            SizedBox(width: 5.0),
+            Text("Multiply: "),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Price
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                    width: 50.0, // Adjust width as needed
+                    child: TextField(
+                      keyboardType:
+                          TextInputType.numberWithOptions(decimal: true),
+                      controller:
+                          TextEditingController(text: _multiply.toString()),
+                      onChanged: (value) {
+                        if (value.isNotEmpty) {
+                          _vat = double.parse(value);
+                          _updateFinalPrice();
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            SizedBox(width: 5.0),
+            Text("Total Cost: "),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Row(
+                // Price
+                children: [
+                  SizedBox(width: 5.0),
+                  SizedBox(
+                    width: 50.0, // Adjust width as needed
+                    child: Text(_final.toStringAsFixed(2)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
